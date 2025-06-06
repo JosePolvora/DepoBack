@@ -89,6 +89,7 @@ async function actualizarStockYFecha(req, res) {
 
 async function actualizarStockyUbicacion(req, res) {
     const { plano_id, ubicacion_id, cantidad } = req.body;
+    console.log("🪵 Datos recibidos en actualizarStockyUbicacion:", req.body);
 
     if (!plano_id || !ubicacion_id || cantidad === undefined) {
         return res.status(400).json({ ok: false, message: "Datos incompletos: plano_id, ubicacion_id y cantidad son requeridos." });
@@ -230,6 +231,7 @@ async function moverStockEntreUbicaciones(req, res) {
     }
 
     try {
+        // Buscar stock en la ubicación de origen
         const origen = await dbdepo.Planoxubicacion.findOne({
             where: { plano_id, ubicacion_id: ubicacion_origen_id }
         });
@@ -238,6 +240,7 @@ async function moverStockEntreUbicaciones(req, res) {
             return res.status(404).json({ ok: false, message: "No se encontró la ubicación de origen." });
         }
 
+        // Verificar que hay stock suficiente para mover
         if (origen.stock < cantidad) {
             return res.status(400).json({ ok: false, message: "Stock insuficiente en la ubicación de origen." });
         }
@@ -252,6 +255,7 @@ async function moverStockEntreUbicaciones(req, res) {
             defaults: { stock: 0 }
         });
 
+        // Sumar stock a la ubicación destino
         destino.stock += cantidad;
         await destino.save();
 
@@ -262,7 +266,6 @@ async function moverStockEntreUbicaciones(req, res) {
         return res.status(500).json({ ok: false, message: error.message });
     }
 }
-
 
 // Eliminar una relación por ID
 async function deletePlanoxubicacionById(req, res) {

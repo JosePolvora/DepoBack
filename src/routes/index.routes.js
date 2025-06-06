@@ -26,12 +26,8 @@ routes.use("/", ingresoRoutes);
 const egresoRoutes = require("./egreso.routes");
 routes.use("/", egresoRoutes);
 
-//const origenRoutes = require("./origen.routes");
-//routes.use("/", origenRoutes);
-
 const planoxubicacionRoutes = require("./planoxubicacion.routes");
 routes.use("/", planoxubicacionRoutes);
-
 
 // NUEVA RUTA PARA AI
 const airoutes = require("./ai.routes");
@@ -40,8 +36,6 @@ routes.use("/ai", airoutes);  // Aquí agregamos la ruta para la IA con prefijo 
 // Ruta para subir Excel
 const uploadRoutes = require("./upload.routes");
 routes.use("/", uploadRoutes); // Agregado
-
-
 
 
 module.exports = routes;

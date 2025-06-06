@@ -7,7 +7,9 @@ async function createIngreso(req, res) {
         const crearIngreso = await dbdepo.Ingreso.create({
             cantidad: dataIngresos.cantidad,
             fecha: dataIngresos.fecha,
-            tipo: "Ingreso",  // Este es un ingreso
+            plano_id: dataIngresos.plano_id,
+            ubicacion_id: dataIngresos.ubicacion_id,
+            planoxubicacion_id: dataIngresos.planoxubicacion_id
         });
 
         res.status(201).json({
@@ -26,6 +28,45 @@ async function createIngreso(req, res) {
     }
 }
 
+
+// Para usar historial automatico
+
+// async function createIngreso(req, res) {
+//     const dataIngresos = req.body;
+
+//     try {
+//         const crearIngreso = await dbdepo.Ingreso.create({
+//             cantidad: dataIngresos.cantidad,
+//             fecha: dataIngresos.fecha,
+//             plano_id: dataIngresos.plano_id,
+//             ubicacion_id: dataIngresos.ubicacion_id,
+//             planoxubicacion_id: dataIngresos.planoxubicacion_id
+//         });
+
+//         // 👉 Crear el historial asociado al ingreso
+//         await dbdepo.Historial.create({
+//             fecha: dataIngresos.fecha || new Date(), // Usar la misma fecha o fecha actual
+//             usuario_id: dataIngresos.usuario_id,     // Asegurate de enviar esto desde el front
+//             plano_id: dataIngresos.plano_id,
+//             ubicacion_id: dataIngresos.ubicacion_id,
+//             ingreso_id: crearIngreso.ingreso_id
+//         });
+
+//         res.status(201).json({
+//             ok: true,
+//             status: 201,
+//             message: "Ingreso y historial creados",
+//             body: crearIngreso,
+//         });
+
+//     } catch (error) {
+//         res.status(500).json({
+//             ok: false,
+//             status: 500,
+//             message: error.message,
+//         });
+//     }
+// }
 
 
 

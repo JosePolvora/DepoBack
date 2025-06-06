@@ -5,7 +5,13 @@ async function createHistorial(req, res) {
 
     try {
         const crearHistorial = await dbdepo.Historial.create({
-            fecha: dataHistorial.fecha // O simplemente {} si usás default
+            fecha: dataHistorial.fecha,
+
+            plano_id: dataHistorial.plano_id,
+            ubicacion_id: dataHistorial.ubicacion_id,
+            usuario_id: dataHistorial.usuario_id,
+            egreso_id: dataHistorial.egreso_id,
+            ingreso_id: dataHistorial.ingreso_id
         });
 
         res.status(201).json({
@@ -24,9 +30,61 @@ async function createHistorial(req, res) {
     }
 }
 
-// async function getHistoriales(req, res) {
+
+
+async function getHistoriales(req, res) {
+    try {
+        const historiales = await dbdepo.Historial.findAll({
+            include: [
+                {
+                    model: dbdepo.Plano,
+                    attributes: ['plano', 'denominacion']
+                },
+                {
+                    model: dbdepo.Ubicacion,
+                    attributes: ['codigo']
+                },
+                {
+                    model: dbdepo.Usuario,
+                    attributes: ['nombre', 'apellido', 'sector', 'legajo']
+                },
+                {
+                    model: dbdepo.Egreso,
+                    attributes: ['cantidad']
+                },
+                {
+                    model: dbdepo.Ingreso,
+                    attributes: ['cantidad']
+                }
+            ]
+        });
+
+        res.status(200).json({
+            ok: true,
+            status: 200,
+            body: historiales,
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            ok: false,
+            status: 500,
+            message: error.message,
+        });
+    }
+}
+
+
+
+
+
+
+// async function getHistorialByPlano(req, res) {
+//     const plano = req.params.plano_id;
+
 //     try {
 //         const historiales = await dbdepo.Historial.findAll({
+//             where: { plano_id: plano },
 //             include: [
 //                 {
 //                     model: dbdepo.Plano,
@@ -66,171 +124,54 @@ async function createHistorial(req, res) {
 //     }
 // }
 
+// async function getHistorialById(req, res) {
+//     const id = req.params.id;
 
-async function getHistoriales(req, res) {
-    try {
-        const historiales = await dbdepo.Historial.findAll({
-            include: [
-                {
-                    model: dbdepo.Plano,
-                    attributes: ['plano', 'denominacion'],
-                    include: [
-                        {
-                            model: dbdepo.Planoxubicacion,
-                            attributes: ['stock'],
-                            include: [
-                                {
-                                    model: dbdepo.Ubicacion,
-                                    attributes: ['codigo']
-                                }
-                            ]
-                        }
-                    ]
-                },
-                {
-                    model: dbdepo.Ubicacion,
-                    attributes: ['codigo']
-                },
-                {
-                    model: dbdepo.Usuario,
-                    attributes: ['nombre', 'apellido', 'sector', 'legajo']
-                },
-                {
-                    model: dbdepo.Egreso,
-                    attributes: ['cantidad']
-                },
-                {
-                    model: dbdepo.Ingreso,
-                    attributes: ['cantidad']
-                }
-            ]
-        });
-        // const historiales = await dbdepo.Historial.findAll({
-        //     include: [
-        //         {
-        //             model: dbdepo.Plano,
-        //             attributes: ['plano', 'denominacion']
-        //         },
-        //         {
-        //             model: dbdepo.Ubicacion,
-        //             attributes: ['codigo']
-        //         }
-        //     ]
-        // });
+//     try {
+//         const historial = await dbdepo.Historial.findOne({
+//             where: { historial_id: id },
+//             include: [
+//                 {
+//                     model: dbdepo.Plano,
+//                     attributes: ['plano', 'denominacion', 'stock']
+//                 },
+//                 {
+//                     model: dbdepo.Ubicacion,
+//                     attributes: ['codigo']
+//                 },
+//                 {
+//                     model: dbdepo.Usuario,
+//                     attributes: ['nombre', 'apellido', 'sector', 'legajo']
+//                 },
+//                 {
+//                     model: dbdepo.Egreso,
+//                     attributes: ['cantidad']
+//                 },
+//                 {
+//                     model: dbdepo.Ingreso,
+//                     attributes: ['cantidad']
+//                 }
+//             ]
+//         });
 
+//         res.status(200).json({
+//             ok: true,
+//             status: 200,
+//             body: historial,
+//         });
 
-        res.status(200).json({
-            ok: true,
-            status: 200,
-            body: historiales,
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            ok: false,
-            status: 500,
-            message: error.message,
-        });
-    }
-}
-
-
-
-
-
-async function getHistorialByPlano(req, res) {
-    const plano = req.params.plano_id;
-
-    try {
-        const historiales = await dbdepo.Historial.findAll({
-            where: { plano_id: plano },
-            include: [
-                {
-                    model: dbdepo.Plano,
-                    attributes: ['plano', 'denominacion', 'stock']
-                },
-                {
-                    model: dbdepo.Ubicacion,
-                    attributes: ['codigo']
-                },
-                {
-                    model: dbdepo.Usuario,
-                    attributes: ['nombre', 'apellido', 'sector', 'legajo']
-                },
-                {
-                    model: dbdepo.Egreso,
-                    attributes: ['cantidad']
-                },
-                {
-                    model: dbdepo.Ingreso,
-                    attributes: ['cantidad']
-                }
-            ]
-        });
-
-        res.status(200).json({
-            ok: true,
-            status: 200,
-            body: historiales,
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            ok: false,
-            status: 500,
-            message: error.message,
-        });
-    }
-}
-
-async function getHistorialById(req, res) {
-    const id = req.params.id;
-
-    try {
-        const historial = await dbdepo.Historial.findOne({
-            where: { historial_id: id },
-            include: [
-                {
-                    model: dbdepo.Plano,
-                    attributes: ['plano', 'denominacion', 'stock']
-                },
-                {
-                    model: dbdepo.Ubicacion,
-                    attributes: ['codigo']
-                },
-                {
-                    model: dbdepo.Usuario,
-                    attributes: ['nombre', 'apellido', 'sector', 'legajo']
-                },
-                {
-                    model: dbdepo.Egreso,
-                    attributes: ['cantidad']
-                },
-                {
-                    model: dbdepo.Ingreso,
-                    attributes: ['cantidad']
-                }
-            ]
-        });
-
-        res.status(200).json({
-            ok: true,
-            status: 200,
-            body: historial,
-        });
-
-    } catch (error) {
-        res.status(500).json({
-            ok: false,
-            status: 500,
-            message: error.message,
-        });
-    }
-}
+//     } catch (error) {
+//         res.status(500).json({
+//             ok: false,
+//             status: 500,
+//             message: error.message,
+//         });
+//     }
+// }
 
 module.exports = {
     createHistorial,
     getHistoriales,
-    getHistorialById,
-    getHistorialByPlano,
+    // getHistorialById,
+    // getHistorialByPlano,
 };

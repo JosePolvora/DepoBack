@@ -1,14 +1,42 @@
 const dbdepo = require("../models/index.models");
 
+// async function createEgreso(req, res) {
+//     const dataEgresos = req.body;
+
+//     try {
+//         const crearEgreso = await dbdepo.Egreso.create({
+
+//             cantidad: dataEgresos.cantidad,
+//             fecha: dataEgresos.fecha,
+//             tipo: "Egreso",  // Este es un egreso
+//         });
+
+//         res.status(201).json({
+//             ok: true,
+//             status: 201,
+//             message: "Egreso creado",
+//             body: crearEgreso,
+//         });
+
+//     } catch (error) {
+//         res.status(500).json({
+//             ok: false,
+//             status: 500,
+//             message: error.message,
+//         });
+//     }
+// }
+
 async function createEgreso(req, res) {
     const dataEgresos = req.body;
 
     try {
         const crearEgreso = await dbdepo.Egreso.create({
-
             cantidad: dataEgresos.cantidad,
             fecha: dataEgresos.fecha,
-            tipo: "Egreso",  // Este es un egreso
+            plano_id: dataEgresos.plano_id,
+            ubicacion_id: dataEgresos.ubicacion_id,
+            planoxubicacion_id: dataEgresos.planoxubicacion_id
         });
 
         res.status(201).json({
@@ -26,10 +54,6 @@ async function createEgreso(req, res) {
         });
     }
 }
-
-
-
-
 
 async function getEgresos(req, res) {
     try {

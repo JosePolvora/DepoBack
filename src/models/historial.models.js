@@ -25,10 +25,3 @@ module.exports = (sequelize, Sequelize) => {
 
     return Historial;
 };
-
-
-
-
-
-
-
