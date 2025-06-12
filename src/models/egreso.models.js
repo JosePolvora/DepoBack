@@ -12,11 +12,12 @@ module.exports = (sequelize, Sequelize) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        
-        fecha: {
-            type: DataTypes.DATE,
+
+        tipoMovimiento: {
+            type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: Sequelize.NOW
+            defaultValue: 'Egreso'
+
         },
     },
 

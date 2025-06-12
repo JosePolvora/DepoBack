@@ -8,4 +8,5 @@ routes.get("/ingresos/:id", ingresoController.getIngresoById);
 routes.put("/ingresos/:id", ingresoController.updateIngresoById);
 routes.delete("/ingresos/:id", ingresoController.deleteIngresoById);
 
+
 module.exports = routes;

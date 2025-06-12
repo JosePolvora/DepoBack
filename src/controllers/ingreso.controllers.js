@@ -5,11 +5,10 @@ async function createIngreso(req, res) {
 
     try {
         const crearIngreso = await dbdepo.Ingreso.create({
+
             cantidad: dataIngresos.cantidad,
-            fecha: dataIngresos.fecha,
-            plano_id: dataIngresos.plano_id,
-            ubicacion_id: dataIngresos.ubicacion_id,
-            planoxubicacion_id: dataIngresos.planoxubicacion_id
+            tipoMovimiento: dataIngresos.tipoMovimiento,
+
         });
 
         res.status(201).json({
@@ -27,48 +26,6 @@ async function createIngreso(req, res) {
         });
     }
 }
-
-
-// Para usar historial automatico
-
-// async function createIngreso(req, res) {
-//     const dataIngresos = req.body;
-
-//     try {
-//         const crearIngreso = await dbdepo.Ingreso.create({
-//             cantidad: dataIngresos.cantidad,
-//             fecha: dataIngresos.fecha,
-//             plano_id: dataIngresos.plano_id,
-//             ubicacion_id: dataIngresos.ubicacion_id,
-//             planoxubicacion_id: dataIngresos.planoxubicacion_id
-//         });
-
-//         // 👉 Crear el historial asociado al ingreso
-//         await dbdepo.Historial.create({
-//             fecha: dataIngresos.fecha || new Date(), // Usar la misma fecha o fecha actual
-//             usuario_id: dataIngresos.usuario_id,     // Asegurate de enviar esto desde el front
-//             plano_id: dataIngresos.plano_id,
-//             ubicacion_id: dataIngresos.ubicacion_id,
-//             ingreso_id: crearIngreso.ingreso_id
-//         });
-
-//         res.status(201).json({
-//             ok: true,
-//             status: 201,
-//             message: "Ingreso y historial creados",
-//             body: crearIngreso,
-//         });
-
-//     } catch (error) {
-//         res.status(500).json({
-//             ok: false,
-//             status: 500,
-//             message: error.message,
-//         });
-//     }
-// }
-
-
 
 
 
@@ -89,6 +46,7 @@ async function getIngresos(req, res) {
         });
     }
 }
+
 
 async function getIngresoById(req, res) {
     const id = req.params.id;
@@ -120,9 +78,9 @@ async function updateIngresoById(req, res) {
     try {
         const actualizaIngreso = await dbdepo.Ingreso.update(
             {
+
                 cantidad: dataIngresos.cantidad,
-                fecha: dataIngresos.fecha,
-                tipo: "Ingreso",  // Este es un ingreso
+                tipoMovimiento: dataIngresos.tipoMovimiento,
             },
             {
                 where: { ingreso_id: id },

@@ -13,11 +13,13 @@ module.exports = (sequelize, Sequelize) => {
             allowNull: false
         },
 
-        fecha: {
-            type: DataTypes.DATE,
+        tipoMovimiento: {
+            type: DataTypes.STRING,
             allowNull: false,
-            defaultValue: Sequelize.NOW
+            defaultValue: 'Ingreso'
+
         },
+
     },
 
     );

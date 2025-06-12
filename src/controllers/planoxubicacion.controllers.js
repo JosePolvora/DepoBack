@@ -8,7 +8,7 @@ async function createPlanoxubicacion(req, res) {
         return res.status(400).json({
             ok: false,
             status: 400,
-            message: "Datos incompletos: se requiere plano_id, ubicacion_id y stock.",
+            // message: "Datos incompletos: se requiere plano_id, ubicacion_id y stock.",
         });
     }
 
@@ -23,7 +23,7 @@ async function createPlanoxubicacion(req, res) {
         res.status(201).json({
             ok: true,
             status: 201,
-            message: "Planoxubicacion creado correctamente.",
+            message: "Creado.",
             body: nuevaRelacion,
         });
 
@@ -71,14 +71,14 @@ async function actualizarStockYFecha(req, res) {
     const { plano_id, ubicacion_id, cantidad } = req.body;
 
     if (!plano_id || !ubicacion_id || cantidad === undefined) {
-        return res.status(400).json({ ok: false, message: "Datos incompletos: plano_id, ubicacion_id y cantidad son requeridos." });
+        return res.status(400).json({ ok: false, message: "Datos Incorrectos" });
     }
 
     try {
         const resultado = await actualizarStockPlano(plano_id, ubicacion_id, cantidad);
         res.status(200).json({
             ok: true,
-            message: "Stock actualizado correctamente.",
+            message: "Stock actualizado.",
             body: resultado
         });
     } catch (error) {
@@ -89,17 +89,17 @@ async function actualizarStockYFecha(req, res) {
 
 async function actualizarStockyUbicacion(req, res) {
     const { plano_id, ubicacion_id, cantidad } = req.body;
-    console.log("🪵 Datos recibidos en actualizarStockyUbicacion:", req.body);
+    // console.log("🪵 Datos recibidos en actualizarStockyUbicacion:", req.body);
 
     if (!plano_id || !ubicacion_id || cantidad === undefined) {
-        return res.status(400).json({ ok: false, message: "Datos incompletos: plano_id, ubicacion_id y cantidad son requeridos." });
+        return res.status(400).json({ ok: false, message: "Datos Incorrectos" });
     }
 
     try {
         const resultado = await actualizarStockPlano(plano_id, ubicacion_id, cantidad);
         res.status(200).json({
             ok: true,
-            message: "Stock actualizado correctamente.",
+            message: "Stock actualizado.",
             body: resultado
         });
     } catch (error) {
@@ -153,7 +153,7 @@ async function getPlanoxubicacionById(req, res) {
             return res.status(404).json({
                 ok: false,
                 status: 404,
-                message: "Planoxubicacion no encontrada.",
+                message: "No se Encuentra",
             });
         }
 
@@ -201,7 +201,7 @@ async function updatePlanoxubicacionById(req, res) {
         res.status(200).json({
             ok: true,
             status: 200,
-            message: "Planoxubicacion actualizada correctamente.",
+            message: "Actualizada Correctamente.",
         });
 
     } catch (error) {
@@ -303,7 +303,7 @@ async function asignarUbicacionAPlano(req, res) {
     if (!plano_id || !ubicacion_id || stock === undefined) {
         return res.status(400).json({
             ok: false,
-            message: "Faltan datos obligatorios (plano_id, ubicacion_id, stock)."
+            message: "Datos Incorrectos"
         });
     }
 
@@ -334,7 +334,7 @@ async function asignarUbicacionAPlano(req, res) {
 
             return res.status(200).json({
                 ok: true,
-                message: "Relación actualizada correctamente.",
+                message: "Se actualizo correctamente.",
                 body: relacionExistente
             });
         }

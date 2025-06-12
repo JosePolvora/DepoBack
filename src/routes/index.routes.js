@@ -31,11 +31,11 @@ routes.use("/", planoxubicacionRoutes);
 
 // NUEVA RUTA PARA AI
 const airoutes = require("./ai.routes");
-routes.use("/ai", airoutes);  // Aquí agregamos la ruta para la IA con prefijo "/ai"
+routes.use("/ai", airoutes);
 
 // Ruta para subir Excel
 const uploadRoutes = require("./upload.routes");
-routes.use("/", uploadRoutes); // Agregado
+routes.use("/", uploadRoutes); 
 
 
 module.exports = routes;

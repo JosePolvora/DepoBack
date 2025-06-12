@@ -26,7 +26,8 @@ exports.uploadFile = async (req, res) => {
     const formattedData = jsonData.map((row) => ({
       plano: row["PLANO"],
       denominacion: row["DENOMINACION"],
-      origen: row["ORIGEN"]
+      origen: row["ORIGEN"],
+      stock: row["STOCK_TOTAL"]
     }));
 
     const result = [];

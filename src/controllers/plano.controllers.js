@@ -45,52 +45,52 @@ async function getPlanos(req, res) {
   }
 }
 
-const { Sequelize } = require('sequelize');
+// const { Sequelize } = require('sequelize');
 
-const getPlanosConStockTotal = async (req, res) => {
-  try {
-    // Sumar stock agrupado por plano_id
-    const stockPorPlano = await dbdepo.Planoxubicacion.findAll({
-      attributes: [
-        'plano_id',
-        [Sequelize.fn('SUM', Sequelize.col('stock')), 'stock_total']
-      ],
-      group: ['plano_id'],
-      raw: true,
-    });
+// const getPlanosConStockTotal = async (req, res) => {
+//   try {
+//     // Sumar stock agrupado por plano_id
+//     const stockPorPlano = await dbdepo.Planoxubicacion.findAll({
+//       attributes: [
+//         'plano_id',
+//         [Sequelize.fn('SUM', Sequelize.col('stock')), 'stock_total']
+//       ],
+//       group: ['plano_id'],
+//       raw: true,
+//     });
 
-    // Obtener todos los planos (sin stock_total)
-    const planos = await dbdepo.Plano.findAll({
-      attributes: ['plano_id', 'plano', 'denominacion', 'origen'],
-      raw: true,
-    });
+//     // Obtener todos los planos (sin stock_total)
+//     const planos = await dbdepo.Plano.findAll({
+//       attributes: ['plano_id', 'plano', 'denominacion', 'origen'],
+//       raw: true,
+//     });
 
-    // Mapear stock_total a cada plano
-    const stockMap = {};
-    stockPorPlano.forEach(item => {
-      stockMap[item.plano_id] = parseInt(item.stock_total, 10) || 0;
-    });
+//     // Mapear stock_total a cada plano
+//     const stockMap = {};
+//     stockPorPlano.forEach(item => {
+//       stockMap[item.plano_id] = parseInt(item.stock_total, 10) || 0;
+//     });
 
-    // Combinar datos planos con stock_total
-    const planosConStockTotal = planos.map(plano => ({
-      ...plano,
-      stock_total: stockMap[plano.plano_id] || 0,
-    }));
+//     // Combinar datos planos con stock_total
+//     const planosConStockTotal = planos.map(plano => ({
+//       ...plano,
+//       stock_total: stockMap[plano.plano_id] || 0,
+//     }));
 
-    return res.status(200).json({
-      ok: true,
-      status: 200,
-      body: planosConStockTotal,
-    });
-  } catch (error) {
-    console.error(error);
-    return res.status(500).json({
-      ok: false,
-      status: 500,
-      message: error.message,
-    });
-  }
-};
+//     return res.status(200).json({
+//       ok: true,
+//       status: 200,
+//       body: planosConStockTotal,
+//     });
+//   } catch (error) {
+//     console.error(error);
+//     return res.status(500).json({
+//       ok: false,
+//       status: 500,
+//       message: error.message,
+//     });
+//   }
+// };
 
 
 async function getPlanoById(req, res) {
@@ -115,6 +115,85 @@ async function getPlanoById(req, res) {
     });
   }
 }
+
+const { Sequelize, Op } = require('sequelize');
+
+const getPlanosConStockTotal = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const search = req.query.search || '';
+
+    // Primero, obtener todos los planos que coincidan con la búsqueda (si aplica)
+    // Usamos un where para filtro parcial por 'plano' o 'denominacion'
+  
+
+
+    const whereClause = search
+      ? {
+        [Op.or]: [
+          { plano: { [Op.iLike]: `%${search}%` } },
+          { denominacion: { [Op.iLike]: `%${search}%` } },
+        ],
+      }
+      : {};
+
+
+    // Contar total de planos con filtro para paginación
+    const totalPlanos = await dbdepo.Plano.count({ where: whereClause });
+
+    // Obtener planos con paginación
+    const planos = await dbdepo.Plano.findAll({
+      attributes: ['plano_id', 'plano', 'denominacion', 'origen'],
+      where: whereClause,
+      offset: (page - 1) * limit,
+      limit,
+      raw: true,
+    });
+
+    // Obtener stock total para esos planos paginados (filtrado)
+    const planoIds = planos.map(p => p.plano_id);
+    const stockPorPlano = await dbdepo.Planoxubicacion.findAll({
+      attributes: [
+        'plano_id',
+        [Sequelize.fn('SUM', Sequelize.col('stock')), 'stock_total'],
+      ],
+      where: {
+        plano_id: planoIds,
+      },
+      group: ['plano_id'],
+      raw: true,
+    });
+
+    const stockMap = {};
+    stockPorPlano.forEach(item => {
+      stockMap[item.plano_id] = parseInt(item.stock_total, 10) || 0;
+    });
+
+    // Combinar datos planos con stock_total
+    const planosConStockTotal = planos.map(plano => ({
+      ...plano,
+      stock_total: stockMap[plano.plano_id] || 0,
+    }));
+
+    return res.status(200).json({
+      ok: true,
+      status: 200,
+      body: planosConStockTotal,
+      total: totalPlanos,
+      page,
+      limit,
+    });
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      ok: false,
+      status: 500,
+      message: error.message,
+    });
+  }
+};
+
 
 
 const Plano = dbdepo.Plano;
