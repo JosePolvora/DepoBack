@@ -27,7 +27,7 @@ exports.uploadFile = async (req, res) => {
       plano: row["PLANO"],
       denominacion: row["DENOMINACION"],
       origen: row["ORIGEN"],
-      stock: row["STOCK_TOTAL"]
+      //stock_total: row["STOCK"]
     }));
 
     const result = [];

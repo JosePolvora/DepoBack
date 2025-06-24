@@ -18,7 +18,8 @@ async function createUsuario(req, res) {
 
     // Asignar valores por defecto
     const rolIdPorDefecto = 2;
-    const activoPorDefecto = true;
+    // const activoPorDefecto = true;
+    const activoPorDefecto = false;
 
     // Buscar y validar que el rol por defecto exista
     const rol = await Rol.findByPk(rolIdPorDefecto);
@@ -78,6 +79,14 @@ async function loginUsuario(req, res) {
       return res.status(401).json({ ok: false, message: 'Correo no encontrado' });
     }
 
+    // ✅ Verificar si el usuario está activo
+    if (!usuario.activo) {
+      return res.status(403).json({
+        ok: false,
+        message: 'Cuenta inactiva. Espere aprobación del administrador.'
+      });
+    }
+
     const claveValida = await bcrypt.compare(clave, usuario.clave);
 
     if (!claveValida) {
@@ -89,7 +98,7 @@ async function loginUsuario(req, res) {
         id: usuario.usuario_id,
         nombre: usuario.nombre,
         correo: usuario.correo,
-        rol: usuario.rol?.nombre || "Sin rol",  // Cambiado a minúscula 'rol'
+        rol: usuario.rol?.nombre || "Sin rol",
       },
       SECRET_KEY,
       { expiresIn: '2h' }
@@ -104,7 +113,7 @@ async function loginUsuario(req, res) {
         nombre: usuario.nombre,
         apellido: usuario.apellido,
         correo: usuario.correo,
-        rol: usuario.rol?.nombre || "Sin rol"  // Cambiado a minúscula 'rol'
+        rol: usuario.rol?.nombre || "Sin rol"
       },
     });
 
@@ -112,6 +121,7 @@ async function loginUsuario(req, res) {
     res.status(500).json({ ok: false, message: error.message });
   }
 }
+
 
 // ✅ Obtener todos los usuarios (con roles)
 async function getUsuarios(req, res) {

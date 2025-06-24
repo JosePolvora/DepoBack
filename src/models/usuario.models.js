@@ -49,7 +49,7 @@ module.exports = (sequelize, Sequelize) => {
             },
 
             activo: {
-                type: DataTypes.STRING,
+                type: DataTypes.BOOLEAN,
                 allowNull: false
             }
         });
